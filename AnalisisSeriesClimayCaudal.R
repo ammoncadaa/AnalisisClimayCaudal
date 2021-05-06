@@ -23,7 +23,7 @@ source("FuncionesAnalisisClimayCaudal.R")
 ################    Variables definidas por el usuario   ##############################################
 #######################################################################################################
 
-dir_file="C:\\Users\\angel\\Dropbox\\SEI WEAP\\Utiles\\Scripts\\AnalisisClima\\Ejemplo" ###### fijar el directorio de trabajo!!!!!
+dir_file="C:\\Users\\angel\\OneDrive\\Documentos\\GitHub\\AnalisisClimayCaudal\\Ejemplo" ###### fijar el directorio de trabajo!!!!!
 
 name_file="Clima.csv"# las primeras tres columnas correponden a Anio, Mes, Dia
 rowData=17 #fila en donde empieza la informacion 
@@ -759,7 +759,8 @@ for (pos in 1:(length(clima)-1)){
 
 difftime(Sys.time(),start)
 
-if (CorrelogramaPQ==TRUE) {
+
+if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVentanaCaudal")) {
   
   setwd(dir_out1)
   Carpeta_Outg=paste(c("Correlograma_PQ"),collapse="")
@@ -1108,10 +1109,11 @@ if (CorrelogramaPQ==TRUE) {
   write.csv(qanual,paste0("Q_anual.csv"),row.names=F) # saves table of WEAP results into directory
   
   ################## serie mensual y boxplot
-  pmonth1=pmonth
+  
   for (i in 1:ncol(DataQ)){
-    pmonth1[,3:ncol(pmonth1)]=qmonth[,i+1]
-    pmonth1[,3:ncol(pmonth1)]=pmonth1[,3:ncol(pmonth1)]/pmonth[,3:ncol(pmonth1)]
+    pmonth1=pmonth
+    pmonth1[,3:ncol(pmonth1)]=qmonth[,i+2]
+    pmonth1[,3:ncol(pmonth1)]=pmonth1[,3:ncol(pmonth1)]/pmonth[,3:ncol(pmonth)]
     write.csv(pmonth1,paste0(colnames(DataQ)[i]," Q_P_mensual",".csv"),row.names=F) # saves table of WEAP results into directory
     
     pmonth1$Dates=DatesM
@@ -1141,13 +1143,13 @@ if (CorrelogramaPQ==TRUE) {
       facet_wrap(facets = vars(EstacionP), scales = "free_y")+
       theme_bw()
     p
-    plotpath = paste0(colnames(DataQ)[i], "Boxplot Q_P_mensual.jpg") #creates a pdf path to produce a graphic of the span of records in the Data
+    plotpath = paste0(colnames(DataQ)[i], " Boxplot Q_P_mensual.jpg") #creates a pdf path to produce a graphic of the span of records in the Data
     ggsave(plotpath,width =40 , height = 22,units = "cm")
     
   }
   
-  panual1=panual
   for (i in 1:ncol(DataQ)){
+    panual1=panual
     panual1[,2:ncol(panual1)]=qanual[,i+1]
     panual1[,2:ncol(panual1)]=panual1[,2:ncol(panual1)]/panual[,2:ncol(panual1)]
     write.csv(panual1,paste0(colnames(DataQ)[i]," Q_P_anual",".csv"),row.names=F) # saves table of WEAP results into directory
@@ -1157,7 +1159,8 @@ if (CorrelogramaPQ==TRUE) {
     data$D=1
     
     p<- ggplot(data, aes(x=Year, y = Q_P))+
-      geom_point(colour= "blue") +  #, size = 0.8
+      #geom_point(colour= "blue") +  #, size = 0.8
+      geom_line(colour= "blue", size = 0.8) +
       labs(title =paste0("Relación porcentual anual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
       #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
       scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
@@ -1208,6 +1211,10 @@ if (CorrelogramaPQ==TRUE) {
   setwd(dir_outg)
   #mensual multianual
   ##########################################################################################################################
+  #here the aggregation from daily to monthly is done. For precipitation corresponds to a sum while for streamflow a average among values
+  pmonth <- aggregate(dbp[,5:(ncol(dbp)-1)], by=list(Year=dbp$Year, Month=dbp$Month),sum,na.rm=F)
+  #qmonth <- aggregate(dbq[,5:(ncol(dbq)-1)], by=list(Year=dbq$Year, Month=dbq$Month),mean,na.rm=T)
+  qmonth <- aggregate(dbq[,5:(ncol(dbq)-1)], by=list(Year=dbq$Year, Month=dbq$Month),sum,na.rm=F)
   #here data is aggregated to obtain the mean monthly multiyear per variable
   qmonth<- aggregate(qmonth[,3:ncol(qmonth)], by=list(Mes=qmonth$Month),mean,na.rm=T)
   pmonth<- aggregate(pmonth[,3:ncol(pmonth)], by=list(Mes=pmonth$Month),mean,na.rm=T)
@@ -1252,8 +1259,8 @@ if (CorrelogramaPQ==TRUE) {
   ggsave(plotpath,width =40 , height = 22,units = "cm", d)
   
   #medios mensuales multianuales
-  qmonth1=pmonth
   for (i in 1:ncol(DataQ)){
+    qmonth1=pmonth
     qmonth1[,2:ncol(qmonth1)]=qmonth[,i+1]
     dsc<- reshape2::melt(qmonth1,"Mes")
     colnames(dsc)=c("Mes","Estaciones.P", "q_mm")
@@ -1301,8 +1308,6 @@ if (CorrelogramaPQ==TRUE) {
   
   }
   ##########################################################################################################################
-  
- 
 }
 
 difftime(Sys.time(),start)
