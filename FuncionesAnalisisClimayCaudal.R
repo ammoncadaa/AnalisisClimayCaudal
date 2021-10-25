@@ -5,18 +5,18 @@
 #' MODIFIED: 2021
 #' STATUS: working
 #' PURPOSE:
-#' análisis exploratorio de los datos con el fin de determinar cambios y/o tendencias en la serie hidroclimatológica
+#' an?lisis exploratorio de los datos con el fin de determinar cambios y/o tendencias en la serie hidroclimatol?gica
 #' verificar el supuesto de estacionalidad, consistencia y homogeneidad, sin dejar aparte, en algunos casos, la independencia entre \
-#' las observaciones utilizando métodos gráficos 
-#' Los métodos gráficos, como herramienta exploratoria de los datos, se usan con dos propósitos: revelar las características de una 
-#' posible distribución o las relaciones que existen entre las variables, que de otra manera no podrían ser descubiertas (Maidment, 1993). 
+#' las observaciones utilizando m?todos gr?ficos 
+#' Los m?todos gr?ficos, como herramienta exploratoria de los datos, se usan con dos prop?sitos: revelar las caracter?sticas de una 
+#' posible distribuci?n o las relaciones que existen entre las variables, que de otra manera no podr?an ser descubiertas (Maidment, 1993). 
 #'/////////////////////////////////////////////////////////////////////////////
 library(raster)
 library(hydroTSM)
 library(hydroGOF) 
 library(lattice)
-library(ggplot2) #Este paquete sirve para realizar gráficos más elaborados
-library(grid) #para crear división de graficos ggplot2
+library(ggplot2) #Este paquete sirve para realizar gr?ficos m?s elaborados
+library(grid) #para crear divisi?n de graficos ggplot2
 library(car) #para recodificar variables
 library(reshape) #para modificar base de datos para graficos ggplot2
 library(zoo) #para convertir datos en formato series de tiempo
@@ -224,7 +224,7 @@ Calidad=function (DatesVentana,DataVentana) {
     theme(plot.title = element_text(lineheight=.8, face="bold"))+
     theme(axis.text.x=element_text(size=10, angle=90,hjust=0.95,vjust=0.2))+
     facet_grid(CC~., scales="free")+
-    theme(legend.position="none")+
+    theme(legend.position="none")
     #geom_text(aes(label=Valores), position=position_dodge(width=0.9), vjust=--0.3,size=3,colour="black")
     ggsave(plotpath,width =40 , height = 22,units = "cm")
 }
@@ -323,7 +323,7 @@ Valores_ENSO=function (date1, date2) {
   ENSO$COD=NA
   ENSO$SUM=NA
   ENSO$ENSO_COD=NA
-  # 1 Niña, 2 Normal, 3 Niño
+  # 1 Ni?a, 2 Normal, 3 Ni?o
   
   
   # 1 en columna ENSO_COD cuando el valor es menor o igual que -0.5
@@ -370,9 +370,9 @@ Valores_ENSO=function (date1, date2) {
   
   ENSO[which(is.na(ENSO$ENSO_COD)),6]=2
   ENSO$ENSO=NA
-  ENSO[which(ENSO$ENSO_COD==1),7]="Niña"
+  ENSO[which(ENSO$ENSO_COD==1),7]="Ni?a"
   ENSO[which(ENSO$ENSO_COD==2),7]="Normal"
-  ENSO[which(ENSO$ENSO_COD==3),7]="Niño"
+  ENSO[which(ENSO$ENSO_COD==3),7]="Ni?o"
   
   ENSO$COD=NULL
   ENSO$SUM=NULL
@@ -420,14 +420,14 @@ G_ENSO_AnomMensual=function(dir){
   
   DataAnom=cbind(Anom,DatesM)
   DataENSO=cbind(DatesM,ENSOVentana)
-  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Niño","Normal","Niña"))
+  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Ni?o","Normal","Ni?a"))
   for (j in 1:ncol(Data)) {
     plotpath=paste(c(dir,"\\Graficos_anomalias\\",station[j],".jpg"),collapse="")
     ggplot(DataENSO, aes(x=DatesM, y=ANOM)) +  
       geom_bar(stat = "identity",   aes(fill = ENSO),alpha=0.5)+
       theme(legend.title =element_text(color="white") ,legend.position="right")+ 
       ylab(paste(c("ONI \nAnomalias ",clima.var2[clima[pos]]),collapse=""))+
-      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ", breaks=c("Niño","Normal","Niña"),labels=c("Niño","Normal","Niña"))+
+      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ", breaks=c("Ni?o","Normal","Ni?a"),labels=c("Ni?o","Normal","Ni?a"))+
       geom_line(data=DataAnom,aes(x=DatesM,y=DataAnom[,j],colour=paste(c("Anomalias ",clima.var2[clima[pos]]),collapse="")),size=0.5)+
       scale_color_manual(values=c("black"))+
       scale_x_date(date_breaks= "1 year",date_minor_breaks = "1 month",limits=c(as.Date(date1),as.Date(date2)),labels = date_format("%Y"))+ 
@@ -455,7 +455,7 @@ G_ENSO_PromMensual=function(dir){
   
   type_fileComplete2=paste(c(clima.var2[clima[pos]]," Mensual"),collapse = "")
   type_fileComplete3=paste(c(clima.var2[clima[pos]],"_Mensual"),collapse = "")
-  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Niño","Normal","Niña"))
+  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Ni?o","Normal","Ni?a"))
   DataENSO$ENSO_COD=factor(DataENSO$ENSO_COD,levels=as.character(c(3,2,1)))
   
   DataENSO1=DataENSO
@@ -479,7 +479,7 @@ G_ENSO_PromMensual=function(dir){
       ylab(type_fileComplete2)+
       scale_x_continuous(breaks=1:12, labels=namesMonth)+
       theme(axis.text.x=element_text(vjust=0.5, size=10))+
-      scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("Niño","Normal","Niña"),labels=c("Niño","Normal","Niña"))+
+      scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("Ni?o","Normal","Ni?a"),labels=c("Ni?o","Normal","Ni?a"))+
       ggtitle(paste(c(type_fileComplete2," ","Promedio ENSO ",station[j]),collapse=""))+
       theme(plot.title = element_text(lineheight=.8, face="bold"))
     
@@ -491,7 +491,7 @@ G_ENSO_PromMensual=function(dir){
       colnames(data_g)=c("Month",type_fileComplete3,"ENSO")
       data_g$Month=rep(1:12,3)
       data_g[,2]=as.numeric(y)
-      data_g$ENSO=factor(c(rep("Niño",12),rep("Normal",12),rep("Niña",12)))
+      data_g$ENSO=factor(c(rep("Ni?o",12),rep("Normal",12),rep("Ni?a",12)))
       for (r in 1:36){
         if (data_g[r,2]<min[r,j+1]){data_g[r,2]=min[r,j+1]}
       }
@@ -504,7 +504,7 @@ G_ENSO_PromMensual=function(dir){
         ylab(type_fileComplete2)+
         scale_x_continuous(breaks=1:12, labels=namesMonth)+
         theme(axis.text.x=element_text(vjust=0.5, size=10))+
-        scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("Niño","Normal","Niña"),labels=c("Niño","Normal","Niña"))+
+        scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("Ni?o","Normal","Ni?a"),labels=c("Ni?o","Normal","Ni?a"))+
         ggtitle(paste(c(type_fileComplete2," ","Promedio ENSO ",station[j]),collapse=""))+
         theme(plot.title = element_text(lineheight=.8, face="bold"))
       ggsave(plotpath,width =40 , height = 22,units = "cm")
@@ -514,7 +514,7 @@ G_ENSO_PromMensual=function(dir){
       
       data_g$Normal=rep(data_g[13:24,2])
       data_g$p=(data_g[,2]-data_g[,4])/data_g[,4]*100
-      data_g$ENSO=factor(data_g$ENSO,levels=c("Niño","Normal","Niña"))
+      data_g$ENSO=factor(data_g$ENSO,levels=c("Ni?o","Normal","Ni?a"))
       data_g$Month=factor(data_g$Month)
       data_g1=rbind(data_g[1:12,],data_g[25:36,])
       data_g1$Estacion=rep(station[j])
@@ -527,8 +527,8 @@ G_ENSO_PromMensual=function(dir){
         xlab("Meses")+
         ylab("Diferencia Porcentual (%)")+
         theme(axis.text.x=element_text(vjust=0.5, size=10))+
-        scale_fill_manual(values=c("firebrick3","dodgerblue2"), name=" ",breaks=c("Niño","Niña"),labels=c("Niño","Niña"))+
-        ggtitle(paste(c("Comparación porcentual respecto a la fase normal del fenómeno ENSO ",station[j]),collapse=""))+
+        scale_fill_manual(values=c("firebrick3","dodgerblue2"), name=" ",breaks=c("Ni?o","Ni?a"),labels=c("Ni?o","Ni?a"))+
+        ggtitle(paste(c("Comparaci?n porcentual respecto a la fase normal del fen?meno ENSO ",station[j]),collapse=""))+
         theme(plot.title = element_text(lineheight=.8, face="bold"))
       ggsave(plotpath,width =40 , height = 22,units = "cm")
       
@@ -551,20 +551,20 @@ G_ENSO_PromMensual=function(dir){
     xlab("Meses")+
     ylab("Diferencia Porcentual (%)")+
     theme(axis.text.x=element_text(vjust=0.5, angle=90,size=10))+
-    scale_fill_manual(values=c("firebrick3","dodgerblue2"), name=" ",breaks=c("Niño","Niña"),labels=c("Niño","Niña"))+
-    ggtitle(paste(c("Comparación porcentual respecto a la fase normal del fenómeno ENSO"),collapse=""))+
+    scale_fill_manual(values=c("firebrick3","dodgerblue2"), name=" ",breaks=c("Ni?o","Ni?a"),labels=c("Ni?o","Ni?a"))+
+    ggtitle(paste(c("Comparaci?n porcentual respecto a la fase normal del fen?meno ENSO"),collapse=""))+
     theme(plot.title = element_text(lineheight=.8, face="bold"))+
     facet_wrap( ~ Estacion, scales = "free")
   ggsave(plotpath,width =40 , height = 22,units = "cm")
   
   DataENSO=merge(DataVentanaMensual_v,ENSO,c("Year","Month"))
-  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Niño","Normal","Niña"))
+  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Ni?o","Normal","Ni?a"))
   DataENSO$ENSO_COD=factor(DataENSO$ENSO_COD,levels=as.character(c(3,2,1)))
   DataENSO$Month=as.numeric(as.character(DataENSO$Month))
   #str(data_g)
   #str(data_gAll2)
   data_gAll2$Month=as.numeric(data_gAll2$Month)
-  data_gAll2$ENSO=factor(data_gAll2$ENSO,levels = c("Niño","Normal","Niña"))
+  data_gAll2$ENSO=factor(data_gAll2$ENSO,levels = c("Ni?o","Normal","Ni?a"))
   
   plotpath=paste(c(dir,"\\Graficos_plot\\",type_fileComplete2," ","Promedio ENSO",".jpg"),collapse="")
   ggplot(DataENSO,aes(x=Month,y=Valores,colour=ENSO))+
@@ -574,7 +574,7 @@ G_ENSO_PromMensual=function(dir){
     ylab(type_fileComplete2)+
     scale_x_continuous(breaks=1:12, labels=namesMonth)+
     theme(axis.text.x=element_text(angle=90, vjust=0.5, size=10))+
-    scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("Niño","Normal","Niña"),labels=c("Niño","Normal","Niña"))+
+    scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("Ni?o","Normal","Ni?a"),labels=c("Ni?o","Normal","Ni?a"))+
     ggtitle(paste(c(type_fileComplete2," ","Promedio ENSO"),collapse=""))+
     theme(plot.title = element_text(lineheight=.8, face="bold"))+
     facet_wrap( ~ Estacion, scales = "free")
@@ -596,7 +596,7 @@ G_ENSO_boxplot=function(dir){
   setwd(dir)
   dir.create("Graficos_boxplot",showWarnings=F)
   
-  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Niño","Normal","Niña"))
+  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Ni?o","Normal","Ni?a"))
   DataENSO$ENSO_COD=factor(DataENSO$ENSO_COD,levels=as.character(c(3,2,1)))
   type_fileComplete2=paste(c(clima.var2[clima[pos]]," Mensual"),collapse = "")
   
@@ -609,8 +609,8 @@ G_ENSO_boxplot=function(dir){
       ylab(type_fileComplete2)+
       scale_x_discrete(breaks=1:12, labels=namesMonth)+
       theme(axis.text.x=element_text(vjust=0.5, size=10))+
-      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Niño","Normal","Niña"))+
-      scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Niño","Normal","Niña"))+
+      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Ni?o","Normal","Ni?a"))+
+      scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Ni?o","Normal","Ni?a"))+
       ggtitle(paste(c(type_fileComplete2," ENSO ",station[j]),collapse=""))+
       theme(plot.title = element_text(lineheight=.8, face="bold"))
     g
@@ -623,7 +623,7 @@ G_ENSO_boxplot=function(dir){
   }
   
   DataENSO=merge(DataVentanaMensual_v,ENSO,c("Year", "Month"))
-  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Niño","Normal","Niña"))
+  DataENSO$ENSO=factor(DataENSO$ENSO,levels=c("Ni?o","Normal","Ni?a"))
   DataENSO$ENSO_COD=factor(DataENSO$ENSO_COD,levels=as.character(c(3,2,1)))
   plotpath=paste(c(dir,"\\Graficos_boxplot\\",type_fileComplete2," ","ENSO",".jpg"),collapse="")
   ggplot(DataENSO,aes(x=factor(Month),y=Valores,colour=ENSO_COD))+
@@ -633,8 +633,8 @@ G_ENSO_boxplot=function(dir){
     ylab(type_fileComplete2)+
     scale_x_discrete(breaks=1:12, labels=namesMonth)+
     theme(axis.text.x=element_text(angle=90, vjust=0.5, size=10))+
-    scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Niño","Normal","Niña"))+
-    scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Niño","Normal","Niña"))+
+    scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Ni?o","Normal","Ni?a"))+
+    scale_colour_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ",breaks=c("3","2","1"),labels=c("Ni?o","Normal","Ni?a"))+
     ggtitle(paste(c(type_fileComplete2," "," ENSO"),collapse=""))+
     theme(plot.title = element_text(lineheight=.8, face="bold"))+
     facet_wrap( ~ Estacion, scales = "free")
@@ -857,7 +857,7 @@ GraficasEDAmultiplot=function(dat.m,dir_out,type_fileComplete,N_Graficas,addggti
     facet_wrap(~ Estacion, scales = "free")+
     theme(legend.position="none")
   
-  #serie de tiempo diaria boxplot con eje x año
+  #serie de tiempo diaria boxplot con eje x a?o
   #dat.m1=dat.m[1:(2*length(DatesVentana)),]
   EDA_M2log = ggplot(dat.m,aes(x=MesDia, y=Valores,colour=Estacion))+
     geom_boxplot(size=0.5,alpha=0.5,outlier.size = 0.1)+
@@ -1051,7 +1051,7 @@ GraficasEDA_M=function(dat.m,dir_out,type_fileComplete,N_Graficas,addggtitle) {
     theme(legend.position="none")
   ggsave(plotpath,width =40 , height = 22,units = "cm")
   
-  #serie de tiempo diaria boxplot con eje x año
+  #serie de tiempo diaria boxplot con eje x a?o
   #dat.m1=dat.m[1:(2*length(DatesVentana)),]
   plotpath = paste(c(dir_out,"\\",N_Graficas,"_",type_fileComplete,"_BoxPlot Mensual_log ",PeriodoRegistro,".jpg"),collapse="")
   ggplot(dat.m,aes(x=MesDia, y=Valores,colour=Estacion))+
@@ -1194,7 +1194,7 @@ GraficasEDA_Mmultiplot=function(dat.m,dir_out,type_fileComplete,N_Graficas,addgg
   if(require("scales")==FALSE){install.packages("scales", dep = T)} 
   library(scales)
   
-  #serie de tiempo diaria boxplot con eje x año
+  #serie de tiempo diaria boxplot con eje x a?o
   #dat.m1=dat.m[1:(2*length(DatesVentana)),]
   EDA_M2log  =  ggplot(dat.m,aes(x=MesDia, y=Valores,colour=Estacion))+
     geom_boxplot(size=0.5,alpha=0.5)+
