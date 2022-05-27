@@ -5,18 +5,19 @@
 #' MODIFIED: 2021
 #' STATUS: working
 #' PURPOSE:
-#' análisis exploratorio de los datos con el fin de determinar cambios y/o tendencias en la serie hidroclimatológica
+#' an?lisis exploratorio de los datos con el fin de determinar cambios y/o tendencias en la serie hidroclimatol?gica
 #' verificar el supuesto de estacionalidad, consistencia y homogeneidad, sin dejar aparte, en algunos casos, la independencia entre \
-#' las observaciones utilizando métodos gráficos 
-#' Los métodos gráficos, como herramienta exploratoria de los datos, se usan con dos propósitos: revelar las características de una 
-#' posible distribución o las relaciones que existen entre las variables, que de otra manera no podrían ser descubiertas (Maidment, 1993). 
+#' las observaciones utilizando m?todos gr?ficos 
+#' Los m?todos gr?ficos, como herramienta exploratoria de los datos, se usan con dos prop?sitos: revelar las caracter?sticas de una 
+#' posible distribuci?n o las relaciones que existen entre las variables, que de otra manera no podr?an ser descubiertas (Maidment, 1993). 
 options(warn=1)
 rm(list=ls()) # removes variables from environment
+source("FuncionesAnalisisClimayCaudal.R")
 theme_update(plot.title = element_text(hjust = 0.5)) # fija el titulo de las graficas como centrado
 start = Sys.time() # stores the time at the start of the script run (to calculate total time to run the script)
 #rstudioapi::getSourceEditorContext()$path
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))  
-source("FuncionesAnalisisClimayCaudal.R")
+
 #'/////////////////////////////////////////////////////////////////////////////
 
 #######################################################################################################
@@ -33,7 +34,7 @@ AreasQ_File=paste0("AreasAferentes_Q.csv")
 #para generar un mapa con el contorno de la cuenca y las estaciones
 file_ShapeCatchs="Cuencas"
 file_ShapeRios="drenajes" #opcional, si no se tiene se debe desactivar (FALSE) la opcion de IncluirRios
-labelsize=2 # tamaño de las etiquetas del nombre de la estaciones en el mapa 
+labelsize=2 # tama?o de las etiquetas del nombre de la estaciones en el mapa 
 
 #perido en que se desea ejecutar el analisis
 dateIni = "1989/01/01" ##en caso de querer un periodo de tiempo diferente al contenido en el archivo, si no NULL
@@ -75,7 +76,7 @@ Fun_file=as.character(DataC[4,6:ncol(DataC)]) #seleccione la funcion para agrega
 IncluirControlNegativos=as.logical(DataC[5,6:ncol(DataC)]) # si se desea comprobar si existen valores negativos
 LimiteInferior=as.numeric(DataC[6,6:ncol(DataC)]) # fijar limite inferior si se desea comprobar que valores estan por debajo del limite
 LimiteSuperior=as.numeric(DataC[7,6:ncol(DataC)])  # fijar limite superior si se desea comprobar que valores estan por encima del limite
-Tipo=as.character(DataC[8,6:ncol(DataC)])  #"Periodo Completo"  o "Diaria" #para "Periodo Completo" se calcula la desviacion estandar de toda la serie, para "Diaria" se calcula la desviacion estandar para cada dia del año
+Tipo=as.character(DataC[8,6:ncol(DataC)])  #"Periodo Completo"  o "Diaria" #para "Periodo Completo" se calcula la desviacion estandar de toda la serie, para "Diaria" se calcula la desviacion estandar para cada dia del a?o
 Extremos_NumDesv.Est=as.numeric(DataC[9,6:ncol(DataC)]) # en caso que se quiera analizar los extremos fijar el numero de desviaciones estantar para que el dato sea considerado extremo
 Nas_admitidos=as.numeric(DataC[10,6:ncol(DataC)]) #porcentaje de datos faltantes admitidos, se elimina la estacion si tiene un mayor porcentaje en las siguientes secciones
 h_estaciones=t(rbind(as.character(DataC[15,6:ncol(DataC)]),as.numeric(DataC[13,6:ncol(DataC)])))
@@ -92,7 +93,7 @@ Coordinates[,1]=as.character(Coordinates[,1])
 stations_project=Coordinates[,1]
 colnames(Coordinates)=c("Station","Longitude","Latitude","h")
 colour="blue" # color para el triangulo hacia arriba que representa la estacion de la variable
-colour_filtroNA = "red" #genera un mapa igual al de GenerarMapa y añade las estaciones que pasaron el filtro NA con el color seleccionado, es decir con un menor %NA 
+colour_filtroNA = "red" #genera un mapa igual al de GenerarMapa y a?ade las estaciones que pasaron el filtro NA con el color seleccionado, es decir con un menor %NA 
 lon_project = mean(as.numeric(as.character(Coordinates[,2])),na.rm=TRUE) 
 lat_project = mean(as.numeric(as.character(Coordinates[,3])),na.rm=TRUE) 
 
@@ -723,11 +724,11 @@ for (pos in 1:(length(clima)-1)){
     ggplot(ENSOVentana_g,aes(x=Month,y=Year,fill=ENSO_COD))+
       geom_tile(colour="grey50")+
       xlab("Meses")+
-      ylab("Años")+
+      ylab("A?os")+
       scale_x_continuous(breaks=1:12, labels=namesMonth)+
       scale_y_continuous(breaks=min(ENSOVentana_g$Year):max(ENSOVentana_g$Year), labels=unique(ENSOVentana_g$Year))+
       theme(axis.text.x=element_text(vjust=0.5, size=10))+
-      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name="", breaks=c(3,2,1),labels=c("Niño","Normal","Niña"))+
+      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name="", breaks=c(3,2,1),labels=c("Ni?o","Normal","Ni?a"))+
       ggtitle(paste(c("Fases ENSO ",PeriodoRegistro),collapse=""))+
       theme(plot.title = element_text(lineheight=.8, face="bold"))
     ggsave(plotpath,width =40 , height = 22,units = "cm")
@@ -736,7 +737,7 @@ for (pos in 1:(length(clima)-1)){
     ggplot(ENSOVentana, aes(x=Date, y=ANOM)) +  
       geom_bar(stat = "identity",   aes(fill = ENSO))+
       ylab(paste(c("ONI"),collapse=""))+
-      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ", breaks=c("Niño","Normal","Niña"),labels=c("Niño","Normal","Niña"))+
+      scale_fill_manual(values=c("firebrick3","chartreuse3","dodgerblue2"), name=" ", breaks=c("Ni?o","Normal","Ni?a"),labels=c("Ni?o","Normal","Ni?a"))+
       scale_x_date(date_breaks= "1 year",date_minor_breaks = "1 month",limits=c(as.Date(date1),as.Date(date2)),date_labels =("%Y"))+ 
       theme(axis.text.x=element_text(size=8, angle=90,hjust=0.95,vjust=0.2))+
       ggtitle(paste(c("ONI"),collapse=""))+
@@ -1065,7 +1066,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
   file$q_p=file$qm/file$pm
   ts =  ggplot(file, aes(x=Dates, y=q_p, fill="Gauge"))+
     geom_line(colour= "blue", size = 0.8) +
-    labs(title =paste0("Serie diaria relacion porcentual estacion caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+    labs(title =paste0("Serie diaria relacion porcentual estacion caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
     scale_x_date(date_breaks= "3 years",date_minor_breaks = "1 year",limits=c(as.Date(min(file$Dates)),as.Date(max(file$Dates))),date_labels =("%Y"))+ 
     #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
     scale_y_continuous(labels = scales::percent_format())+
@@ -1124,7 +1125,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
     levels(data$Mes)=c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')
     p<- ggplot(data, aes(x=Dates, y = Q_P, fill = EstacionP))+
       geom_line(colour= "blue", size = 0.8) +
-      labs(title =paste0("Relación porcentual mensual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+      labs(title =paste0("Relaci?n porcentual mensual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
       #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
       scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
       facet_wrap(facets = vars(EstacionP), scales = "free_y")+
@@ -1137,7 +1138,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
       geom_jitter(alpha=0.5,size=0.1)+
       geom_boxplot(outlier.shape = "") +
       stat_summary(fun=mean,col='blue',size=1,geom='line',aes(group=1))+
-      labs(title =paste0("Relación porcentual mensual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+      labs(title =paste0("Relaci?n porcentual mensual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
       #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
       scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
       facet_wrap(facets = vars(EstacionP), scales = "free_y")+
@@ -1161,7 +1162,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
     p<- ggplot(data, aes(x=Year, y = Q_P))+
       #geom_point(colour= "blue") +  #, size = 0.8
       geom_line(colour= "blue", size = 0.8) +
-      labs(title =paste0("Relación porcentual anual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+      labs(title =paste0("Relaci?n porcentual anual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
       #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
       scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
       facet_wrap(facets = vars(EstacionP), scales = "free_y")+
@@ -1174,7 +1175,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
       geom_jitter(alpha=0.5,size=0.1)+
       geom_boxplot(outlier.shape = "") +
       #stat_summary(fun=mean,col='blue',size=1,geom='line',aes(group=1))+
-      labs(title =paste0("Boxplot Relación porcentual anual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+      labs(title =paste0("Boxplot Relaci?n porcentual anual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
       #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
       scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
       facet_wrap(facets = vars(EstacionP), scales = "free_y") +
@@ -1191,7 +1192,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
       geom_jitter(alpha=0.5,size=0.1)+
       geom_boxplot(outlier.shape = "") +
       #stat_summary(fun=mean,col='blue',size=1,geom='line',aes(group=1))+
-      labs(title =paste0("Boxplot Relación porcentual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+      labs(title =paste0("Boxplot Relaci?n porcentual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
       #scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
       scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
       #facet_wrap(facets = vars(Gauge), scales = "free_y") +
@@ -1231,7 +1232,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
   colnames(dsc)=c("Mes","Estaciones.P", "q_mm")
 
   a <- ggplot(prc,aes(x=Mes)) +
-    geom_col(aes(y=p_mm, col = "precipitación"), fill = "#00AFBB", colour= "#00AFBB", alpha = 0.4) +
+    geom_col(aes(y=p_mm, col = "precipitaci?n"), fill = "#00AFBB", colour= "#00AFBB", alpha = 0.4) +
     scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
     facet_wrap(facets = vars(Estaciones.P), scales = "free_y")+
     theme_bw()+
@@ -1276,7 +1277,7 @@ if (CorrelogramaPQ==TRUE && exists("DataVentanaPrecipitacion") && exists("DataVe
   df$ratio <- (df$q_mm/df$p_mm)
   p<- ggplot(data=df, aes(x=mes, y = ratio, fill = "estacion"))+
     geom_line(colour= "blue", size = 0.8) +
-    labs(title =paste0("Relación porcentual mensual multianual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relación Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
+    labs(title =paste0("Relaci?n porcentual mensual multianual entre la estacion de caudal ",colnames(DataQ)[i]," y cada estacion de precipitacion"), y = "Relaci?n Q/P [%]") +  #caption = "Fuente: EPMAPS y FONAG", 
     scale_x_continuous(breaks = seq(1,12,by=1),labels = c('En','Fb','Mr','Ab','My','Jn','Jl','Ag','Sp','Oc','Nv','Dc')) +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1L))+
     facet_wrap(facets = vars(estacion), scales = "free_y")+
